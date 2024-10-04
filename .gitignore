@@ -170,3 +170,6 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/goland,go,linux,git
 
 .idea
+
+*log.log
+*log.json
