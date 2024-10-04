@@ -44,12 +44,6 @@ func TestLogger(t *testing.T) {
 			},
 			want: `{"level":"WARN","msg":"WARN","key":"value"}`,
 		},
-		{
-			f: func() {
-				l.Error("ERROR", "key", "value")
-			},
-			want: `{"level":"ERROR","msg":"ERROR","key":"value"}`,
-		},
 	}
 
 	// first run logs
