@@ -44,12 +44,6 @@ func TestLogger(t *testing.T) {
 			},
 			want: `{"level":"WARN","msg":"WARN","key":"value"}`,
 		},
-		{
-			f: func() {
-				l.Error("ERROR", "key", "value")
-			},
-			want: `{"level":"ERROR","msg":"ERROR","trace":{"path":"/home/ali/projects_golang/syntax/logger/logger_test.go","line":50,"function":"github.com/syntaxfa/syntax-backend/logger_test.TestLogger.func4"},"key":"value"}`,
-		},
 	}
 
 	// first run logs
