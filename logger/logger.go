@@ -1,11 +1,12 @@
 package logger
 
 import (
-	"github.com/syntaxfa/syntax-backend/pkg/trace"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log/slog"
 	"os"
+
+	"github.com/syntaxfa/syntax-backend/pkg/trace"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type Logger struct {
@@ -41,7 +42,7 @@ func init() {
 	}))
 }
 
-func New(cfg Config, opt *slog.HandlerOptions, WriteInConsole bool) *Logger {
+func New(cfg Config, opt *slog.HandlerOptions, writeInConsole bool) *Logger {
 	fileWriter := &lumberjack.Logger{
 		Filename:  cfg.FilePath,
 		LocalTime: cfg.UseLocalTime,
@@ -49,14 +50,14 @@ func New(cfg Config, opt *slog.HandlerOptions, WriteInConsole bool) *Logger {
 		MaxAge:    cfg.FileMaxAgeInDays,
 	}
 
-	if WriteInConsole {
+	if writeInConsole {
 		return &Logger{
 			l: slog.New(slog.NewJSONHandler(io.MultiWriter(fileWriter, os.Stdout), opt)),
 		}
-	} else {
-		return &Logger{
-			l: slog.New(slog.NewJSONHandler(fileWriter, opt)),
-		}
+	}
+
+	return &Logger{
+		l: slog.New(slog.NewJSONHandler(fileWriter, opt)),
 	}
 }
 
