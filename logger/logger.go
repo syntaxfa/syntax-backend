@@ -28,7 +28,7 @@ type Config struct {
 	FileMaxAgeInDays int
 }
 
-var L *Logger = &Logger{}
+var L = &Logger{}
 
 func init() {
 	fileWriter := &lumberjack.Logger{
