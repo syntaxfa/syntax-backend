@@ -13,6 +13,10 @@ type RichError struct {
 }
 
 func (r RichError) Error() string {
+	if r.message == "" && r.wrapError != nil {
+		return r.wrapError.Error()
+	}
+
 	return r.message
 }
 
@@ -22,21 +26,25 @@ func New(op string) RichError {
 
 func (r RichError) WithMessage(message string) RichError {
 	r.message = message
+
 	return r
 }
 
 func (r RichError) WithWrapError(err error) RichError {
 	r.wrapError = err
+
 	return r
 }
 
 func (r RichError) WithKind(kind Kind) RichError {
 	r.kind = kind
+
 	return r
 }
 
 func (r RichError) WithMeta(meta map[string]interface{}) RichError {
 	r.meta = meta
+
 	return r
 }
 
@@ -46,10 +54,11 @@ func (r RichError) Kind() Kind {
 	}
 
 	var err RichError
-
 	if ok := errors.As(r.wrapError, &err); ok {
 		return err.Kind()
 	}
+
+	return err.Kind()
 }
 
 func (r RichError) Message() string {
@@ -61,4 +70,6 @@ func (r RichError) Message() string {
 	if ok := errors.As(r, &err); ok {
 		return err.Message()
 	}
+
+	return err.Message()
 }
