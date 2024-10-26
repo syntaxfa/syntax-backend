@@ -26,21 +26,25 @@ func New(op string) RichError {
 
 func (r RichError) WithMessage(message string) RichError {
 	r.message = message
+
 	return r
 }
 
 func (r RichError) WithWrapError(err error) RichError {
 	r.wrapError = err
+
 	return r
 }
 
 func (r RichError) WithKind(kind Kind) RichError {
 	r.kind = kind
+
 	return r
 }
 
 func (r RichError) WithMeta(meta map[string]interface{}) RichError {
 	r.meta = meta
+
 	return r
 }
 
