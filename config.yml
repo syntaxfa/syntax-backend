@@ -1,0 +1,2 @@
+logger:
+  file_path: "logs/logs.json"
