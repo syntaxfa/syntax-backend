@@ -10,7 +10,10 @@ func main() {
 	//LoggerWithTextHandler()
 	//LoggerWithJsonHandler()
 	//LoggerWithMultiHandler()
-	LoggerGroup()
+	//LoggerGroup()
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	logger.Error("this is an error log", "key", "value")
+	logger.Debug("this is a debug log", "key", "value")
 }
 
 func LoggerWithTextHandler() {

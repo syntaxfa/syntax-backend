@@ -18,11 +18,11 @@ const (
 )
 
 type Config struct {
-	FilePath         string
-	UseLocalTime     bool
-	FileMaxSizeInMB  int
-	FileMaxAgeInDays int
-	LogLevel         int
+	FilePath         string `koanf:"file_path"`
+	UseLocalTime     bool   `koanf:"use_local_time"`
+	FileMaxSizeInMB  int    `koanf:"file_max_size_in_mb"`
+	FileMaxAgeInDays int    `koanf:"file_max_age_in_days"`
+	LogLevel         int    `koanf:"log_level"`
 }
 
 var l *slog.Logger
