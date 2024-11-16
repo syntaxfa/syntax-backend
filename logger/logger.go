@@ -9,10 +9,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-type Logger struct {
-	l *slog.Logger
-}
-
 const (
 	defaultFilePath        = "logs/logs.json"
 	defaultUserLocalTime   = false
@@ -26,9 +22,10 @@ type Config struct {
 	UseLocalTime     bool
 	FileMaxSizeInMB  int
 	FileMaxAgeInDays int
+	LogLevel         int
 }
 
-var L = &Logger{}
+var l *slog.Logger
 
 func init() {
 	fileWriter := &lumberjack.Logger{
@@ -37,12 +34,34 @@ func init() {
 		MaxSize:   defaultFileMaxSizeInMB,
 		MaxAge:    defaultFileAgeInDays,
 	}
-	L.l = slog.New(slog.NewJSONHandler(io.MultiWriter(fileWriter, os.Stdout), &slog.HandlerOptions{
+	l = slog.New(slog.NewJSONHandler(io.MultiWriter(fileWriter, os.Stdout), &slog.HandlerOptions{
 		Level: defaultLogLevel,
 	}))
 }
 
-func New(cfg Config, opt *slog.HandlerOptions, writeInConsole bool) *Logger {
+func L() *slog.Logger {
+	return l
+}
+
+func LogError(err error) {
+	if err == nil {
+		return
+	}
+
+	L().Error(err.Error())
+}
+
+func WithGroup(groupName string) *slog.Logger {
+	t := trace.Parse()
+
+	return l.With(slog.String("group", groupName)).With(slog.Group("trace",
+		slog.String("path", t.File),
+		slog.Int("line", t.Line),
+		slog.String("function", t.Function),
+	))
+}
+
+func New(cfg Config, opt *slog.HandlerOptions, writeInConsole bool) *slog.Logger {
 	fileWriter := &lumberjack.Logger{
 		Filename:  cfg.FilePath,
 		LocalTime: cfg.UseLocalTime,
@@ -51,34 +70,8 @@ func New(cfg Config, opt *slog.HandlerOptions, writeInConsole bool) *Logger {
 	}
 
 	if writeInConsole {
-		return &Logger{
-			l: slog.New(slog.NewJSONHandler(io.MultiWriter(fileWriter, os.Stdout), opt)),
-		}
+		return slog.New(slog.NewJSONHandler(io.MultiWriter(fileWriter, os.Stdout), opt))
 	}
 
-	return &Logger{
-		l: slog.New(slog.NewJSONHandler(fileWriter, opt)),
-	}
-}
-
-func (logger *Logger) Debug(msg string, args ...any) {
-	logger.l.Debug(msg, args...)
-}
-
-func (logger *Logger) Info(msg string, args ...any) {
-	logger.l.Info(msg, args...)
-}
-
-func (logger *Logger) Warn(msg string, args ...any) {
-	logger.l.Warn(msg, args...)
-}
-
-func (logger *Logger) Error(msg string, args ...any) {
-	t := trace.Parse()
-
-	logger.l.With(slog.Group("trace",
-		slog.String("path", t.File),
-		slog.Int("line", t.Line),
-		slog.String("function", t.Function),
-	)).Error(msg, args...)
+	return slog.New(slog.NewJSONHandler(fileWriter, opt))
 }
