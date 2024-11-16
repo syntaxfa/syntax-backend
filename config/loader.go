@@ -2,14 +2,14 @@ package config
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/knadh/koanf"
-	_ "github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/env"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/syntaxfa/syntax-backend/logger"
-	"strings"
 )
 
 // TODO - defaultYamlFilePath has some problem in testing environment ut have normal behavior in build environment.
